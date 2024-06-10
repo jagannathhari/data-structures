@@ -19,8 +19,8 @@ typedef struct {
 #define vector_length(v)                vector_header(v)->length
 #define vector_capacity(v)              (vector_header(v)->capacity)
 #define vector_pop_back(v)              vector_header(v)->length -= 1
-#define shift(vector, pos, shift_by)    vector_shift_right(vector, pos, shift_by, sizeof(*vector))
-#define vector_insert(vector, pos, val) (shift(vector, pos, 1), vector[pos] = val, &vector[pos])
+#define vector_insert(vector, pos, val) (vector_shift_right(vector, pos, 1,sizeof(*vector)), vector[pos] = val, &vector[pos])
+
 #define free_vector(v)                  free((vector_header(v)))
 #define vector_append(vector, value)    ((vector) = vector_ensure_capacity(vector, 1, sizeof((*vector))),  \
                                         (vector)[vector_header(vector)->length] = (value),                 \
