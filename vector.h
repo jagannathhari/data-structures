@@ -71,7 +71,7 @@ void *vector_ensure_capacity(void *vector, size_t total_element, size_t element_
     return vec_header;
 }
 
-static void vector_shift_right(void *vector, size_t from_pos, size_t shift_by, size_t element_size) {
+void vector_shift_right(void *vector, size_t from_pos, size_t shift_by, size_t element_size) {
     size_t old_length = vector_length(vector);
     void *new_vector = vector_ensure_capacity(vector, shift_by, element_size);
     vector_header(vector)->length += shift_by;
