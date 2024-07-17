@@ -1,7 +1,7 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
-// refrence https://bytesbeneath.c om/p/dynamic-arrays-in-c
+// refrence https://bytesbeneath.com/p/dynamic-arrays-in-c
 
 #include <stddef.h>
 #include <stdlib.h>
