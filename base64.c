@@ -17,6 +17,8 @@ static const unsigned char decode_table[] = {
 
 char *base64_encode(const unsigned char *src, size_t input_length, char **outptr);
 unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr);
+bool is_valid_base64(const char *base64,size_t input_length);
+static void error(const char *format, ...);
 
 static void error(const char *format, ...) {
     va_list args;
