@@ -2,8 +2,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+
+#define MEMEORY_ERROR "Unable to allocate Memory"
 
 static const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+static const unsigned char decode_table[] = {
+    62, 255, 255, 255, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 255, 255,
+    255,255, 0,   1,   2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,  14,  15,  16,  17,
+    18, 19,  20,  21,  22, 23, 24, 25, 255,255,255,255,255,255,26, 27,  28,  29,  30,  31,
+    32, 33,  34,  35,  36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,  48,  49,  50,  51
+};
+
+char *base64_encode(const unsigned char *src, size_t input_length, char **outptr);
+unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr);
 
 static void error(const char *format, ...) {
     va_list args;
@@ -13,6 +26,28 @@ static void error(const char *format, ...) {
     va_end(args);
 }
 
+bool is_valid_base64(const char *base64,size_t input_length){
+    if(!input_length || input_length % 4){
+        return false;
+    }
+
+    size_t len = input_length;
+    unsigned char lookup_table[256];
+    memset(lookup_table,255,sizeof(lookup_table));
+    memcpy(&lookup_table['+'],decode_table,sizeof(decode_table));
+
+    if(base64[input_length-1]=='=') len--;
+    if(base64[input_length-2]=='=') len--;
+
+    while(len--){
+        if(lookup_table[base64[len]]==0xff){
+            return false;
+        }
+    }
+
+    return true;
+}
+
 char *base64_encode(const unsigned char *src, size_t input_length, char **outptr) {
 
     char *result = NULL;
@@ -20,7 +55,7 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
     result = output = malloc((input_length + 2) / 3 * 4 + 1);
 
     if (!output) {
-        error("Unable to allocate Memory");
+        error(MEMEORY_ERROR);
         return NULL;
     }
 
@@ -46,6 +81,62 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
             *output++ = '=';
             *output++ = '=';
         }
+    }
+    *output = '\0';
+    *outptr = result;
+    return result;
+}
+
+unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr){
+    
+    if(!is_valid_base64(src,input_length)){
+        error("Not a valid base64 content.");
+        return NULL;
+    }
+
+    size_t padding = 0;
+    size_t i = input_length;
+    size_t decoded_length = 0;
+    if(src[input_length-1] == '='){
+       padding++;
+       i--;
+    }
+
+    if(src[input_length-2] == '='){
+       padding++;
+       i--;
+    }
+
+    decoded_length = (input_length/4)*3 - padding + 1;
+
+    unsigned char *output = NULL;
+    unsigned char *result= NULL;
+    result = output = malloc(sizeof(*result)*decoded_length + 1);
+    if(result == NULL){
+        error(MEMEORY_ERROR);
+        return NULL;
+    }
+    unsigned char temp[4];
+    while(i>=4){
+        for(int j=0;j<4;j++){
+            temp[j] = decode_table[*src++ - 43] << 2;
+        }
+        *output++ = temp[0] | (temp[1] >> 6);
+        *output++ = ((temp[1]&0x3c)<<2)| ((temp[2] & 0xf0)>>4);
+        *output++ = ((temp[2]&0xc)<<4)| (temp[3] >> 2);
+        i-=4;
+    }
+    if(padding){
+
+        temp[0] = decode_table[*src++ - 43] << 2;
+        temp[1] = decode_table[*src++ - 43] << 2;
+
+        *output++ = temp[0] | (temp[1] >> 6);
+        if(padding == 1){ // 2 byte avilable
+
+            temp[2] = decode_table[*src++ - 43] << 2;
+            *output++ = ((temp[1]&0x3c)<<2)| ((temp[2] & 0xf0)>>4);
+        }            
     }
     *output = '\0';
     *outptr = result;
