@@ -99,7 +99,6 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
 }
 
 unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen){
-    
     if(!is_valid_base64(src,input_length)){
         error(BAD_CONTENT);
         return NULL;
@@ -118,37 +117,39 @@ unsigned char *base64_decode(const char *src, size_t input_length, unsigned char
        i--;
     }
 
-    decoded_length = (input_length/4)*3 - padding;
+    decoded_length = (input_length / 4) * 3 - padding;
 
     unsigned char *output = NULL;
-    unsigned char *result= NULL;
-    result = output = malloc(sizeof(*result)*decoded_length + 1);
+    unsigned char *result = NULL;
+    result = output = malloc(sizeof(*result) * decoded_length + 1);
     if(result == NULL){
         error(MEMEORY_ERROR);
         return NULL;
     }
+
     unsigned char temp[4];
     while(i>=4){
         for(int j=0;j<4;j++){
             temp[j] = decode_table[*src++ - 43] << 2;
         }
         *output++ = temp[0] | (temp[1] >> 6);
-        *output++ = ((temp[1]&0x3c)<<2)| ((temp[2] & 0xf0)>>4);
-        *output++ = ((temp[2]&0xc)<<4)| (temp[3] >> 2);
+        *output++ = ((temp[1]&0x3c)<<2) | ((temp[2] & 0xf0)>>4);
+        *output++ = ((temp[2]&0xc)<<4)  | (temp[3] >> 2);
         i-=4;
     }
-    if(padding){
 
-        temp[0] = decode_table[*src++ - 43] << 2;
+    if(padding){
+        temp[0] = decode_table[*src++ - 43] << 2; 
         temp[1] = decode_table[*src++ - 43] << 2;
 
         *output++ = temp[0] | (temp[1] >> 6);
         if(padding == 1){ // 2 byte avilable
 
-            temp[2] = decode_table[*src++ - 43] << 2;
-            *output++ = ((temp[1]&0x3c)<<2)| ((temp[2] & 0xf0)>>4);
+            temp[2]   = decode_table[*src++ - 43] << 2;
+            *output++ = ((temp[1]&0x3c)<<2) | ((temp[2] & 0xf0)>>4);
         }            
     }
+
     *outlen = decoded_length;
     *output = '\0';
     *outptr = result;
