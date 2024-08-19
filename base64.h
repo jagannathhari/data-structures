@@ -139,14 +139,14 @@ unsigned char *base64_decode(const char *src, size_t input_length, unsigned char
     }
 
     if(padding){
-        temp[0] = decode_table[*src++ - 43] << 2; 
-        temp[1] = decode_table[*src++ - 43] << 2;
-
-        *output++ = temp[0] | (temp[1] >> 6);
+        temp[0] = decode_table[*src++ - 43] << 2;                       // First byte.
+        temp[1] = decode_table[*src++ - 43] << 2;                       // First byte.
+                                                      
+        *output++ = temp[0] | (temp[1] >> 6);                           // First byte.
         if(padding == 1){ // 2 byte avilable
 
-            temp[2]   = decode_table[*src++ - 43] << 2;
-            *output++ = ((temp[1]&0x3c)<<2) | ((temp[2] & 0xf0)>>4);
+            temp[2]   = decode_table[*src++ - 43] << 2;                 // Second byte
+            *output++ = ((temp[1]&0x3c)<<2) | ((temp[2] & 0xf0)>>4);    // Second byte
         }            
     }
 
