@@ -19,7 +19,7 @@ static const unsigned char decode_table[] = {
 };
 
 char *base64_encode(const unsigned char *src, size_t input_length, char **outptr);
-unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr);
+unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen);
 bool is_valid_base64(const char *base64,size_t input_length);
 static void error(const char *format, ...);
 #endif //BASE64_H
@@ -95,7 +95,7 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
     return result;
 }
 
-unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr){
+unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen){
     
     if(!is_valid_base64(src,input_length)){
         error("Not a valid base64 content.");
@@ -115,7 +115,7 @@ unsigned char *base64_decode(const char *src, size_t input_length, unsigned char
        i--;
     }
 
-    decoded_length = (input_length/4)*3 - padding + 1;
+    decoded_length = (input_length/4)*3 - padding;
 
     unsigned char *output = NULL;
     unsigned char *result= NULL;
@@ -146,6 +146,7 @@ unsigned char *base64_decode(const char *src, size_t input_length, unsigned char
             *output++ = ((temp[1]&0x3c)<<2)| ((temp[2] & 0xf0)>>4);
         }            
     }
+    *outlen = decoded_length;
     *output = '\0';
     *outptr = result;
     return result;
