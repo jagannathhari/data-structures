@@ -1,3 +1,6 @@
+#ifndef BASE64_H
+#define BASE64_H
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +22,9 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
 unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr);
 bool is_valid_base64(const char *base64,size_t input_length);
 static void error(const char *format, ...);
+#endif //BASE64_H
 
+#ifdef IMPLEMENT_BASE64
 static void error(const char *format, ...) {
     va_list args;
     va_start(args, format);
@@ -144,6 +149,7 @@ unsigned char *base64_decode(const char *src, size_t input_length, unsigned char
     *outptr = result;
     return result;
 }
+#endif //IMPLEMENT_BASE64
 
 #ifdef TEST
 #include <assert.h>
@@ -202,4 +208,5 @@ int main() {
     free(decoded_data);
     return 0;
 }
-#endif
+#endif //TEST
+
