@@ -3,8 +3,6 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 
 #define MEMEORY_ERROR "Unable to allocate Memory"
@@ -26,6 +24,10 @@ static void error(const char *format, ...);
 
 #if !defined(IMPLEMENTED_BASE64) && defined(IMPLEMENT_BASE64)
 #define IMPLEMENTED_BASE64
+
+#include <stdlib.h>
+#include <string.h>
+
 static void error(const char *format, ...) {
     va_list args;
     va_start(args, format);
@@ -158,6 +160,7 @@ unsigned char *base64_decode(const char *src, size_t input_length, unsigned char
 int main() {
     char *encoded_data;
     unsigned char *decoded_data;
+    size_t length = 0;
 
     assert(strcmp("IUBQRFJmMHkkLGdtKwpAV3AqMk80Ug1RNDlzLQkxOUNAXSpLYnZsWyd4VFssCiVMS0lFIDlYO0I2ezREaXplLlRRJClscFJZOmI0RX4yQFNZRTsLaQ==", base64_encode((unsigned char*)"\x21\x40\x50\x44\x52\x66\x30\x79\x24\x2c\x67\x6d\x2b\x0a\x40\x57\x70\x2a\x32\x4f\x34\x52\x0d\x51\x34\x39\x73\x2d\x09\x31\x39\x43\x40\x5d\x2a\x4b\x62\x76\x6c\x5b\x27\x78\x54\x5b\x2c\x0a\x25\x4c\x4b\x49\x45\x20\x39\x58\x3b\x42\x36\x7b\x34\x44\x69\x7a\x65\x2e\x54\x51\x24\x29\x6c\x70\x52\x59\x3a\x62\x34\x45\x7e\x32\x40\x53\x59\x45\x3b\x0b\x69", 85, &encoded_data)) == 0);
     assert(strcmp("\x21\x40\x50\x44\x52\x66\x30\x79\x24\x2c\x67\x6d\x2b\x0a\x40\x57\x70\x2a\x32\x4f\x34\x52\x0d\x51\x34\x39\x73\x2d\x09\x31\x39\x43\x40\x5d\x2a\x4b\x62\x76\x6c\x5b\x27\x78\x54\x5b\x2c\x0a\x25\x4c\x4b\x49\x45\x20\x39\x58\x3b\x42\x36\x7b\x34\x44\x69\x7a\x65\x2e\x54\x51\x24\x29\x6c\x70\x52\x59\x3a\x62\x34\x45\x7e\x32\x40\x53\x59\x45\x3b\x0b\x69", (char *)base64_decode("IUBQRFJmMHkkLGdtKwpAV3AqMk80Ug1RNDlzLQkxOUNAXSpLYnZsWyd4VFssCiVMS0lFIDlYO0I2ezREaXplLlRRJClscFJZOmI0RX4yQFNZRTsLaQ==",116,&decoded_data)) == 0);
