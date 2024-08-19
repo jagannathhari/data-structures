@@ -24,7 +24,8 @@ bool is_valid_base64(const char *base64,size_t input_length);
 static void error(const char *format, ...);
 #endif //BASE64_H
 
-#ifdef IMPLEMENT_BASE64
+#if !defined(IMPLEMENTED_BASE64) && defined(IMPLEMENT_BASE64)
+#define IMPLEMENTED_BASE64
 static void error(const char *format, ...) {
     va_list args;
     va_start(args, format);
