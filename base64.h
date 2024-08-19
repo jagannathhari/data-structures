@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 #define MEMEORY_ERROR "Unable to allocate Memory"
+#define BAD_CONTENT "Not a valid base64 content."
 
 static const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -100,7 +101,7 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
 unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen){
     
     if(!is_valid_base64(src,input_length)){
-        error("Not a valid base64 content.");
+        error(BAD_CONTENT);
         return NULL;
     }
 
