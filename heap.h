@@ -89,7 +89,8 @@
 {                                                              \
     __typeof__(vector[0]) temp;                                \
     int orignal_length = vector_length(vector);                \
-    heapify(vector, cmp_macro) while (vector_length(vector)) { \
+    heapify(vector, cmp_macro);                                \
+    while (vector_length(vector)) {                            \
         temp = vector[0];                                      \
         vector[0] = vector[vector_length(vector) - 1];         \
         vector[vector_length(vector) - 1] = temp;              \
