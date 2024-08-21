@@ -105,7 +105,7 @@
 
 #endif // HEAP_H_
 
-#if 1
+#if 0
 int main() {
     int *vector = Vector(int);
     int array[] = {7, 12, 10, 17, 15, 6};
