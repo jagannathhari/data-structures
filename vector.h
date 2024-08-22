@@ -1,5 +1,5 @@
-#ifndef VECTOR_H_
-#define VECTOR_H_
+#ifndef _VECTOR_H_
+#define _VECTOR_H_
 
 // refrence https://bytesbeneath.com/p/dynamic-arrays-in-c
 
@@ -29,7 +29,7 @@ typedef struct {
 void *vector_init(size_t element_size, size_t capacity);
 void *vector_ensure_capacity(void *vector, size_t total_element,size_t element_size);
 
-#endif // VECTOR_H_
+#endif // _VECTOR_H_
 
 #ifdef IMPLEMENT_VECTOR
 #undef IMPLEMENT_VECTOR // Do not define more than once.

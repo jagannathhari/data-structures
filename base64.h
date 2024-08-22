@@ -1,5 +1,5 @@
-#ifndef BASE64_H
-#define BASE64_H
+#ifndef _BASE64_H_
+#define _BASE64_H_
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -21,9 +21,9 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
 unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen);
 bool is_valid_base64(const char *base64,size_t input_length);
 static void error(const char *format, ...);
-#endif //BASE64_H
+#endif //_BASE64_H_
 
-#if !defined(IMPLEMENTED_BASE64) && defined(IMPLEMENT_BASE64)
+#if !defined(_IMPLEMENTED_BASE64_) && defined(IMPLEMENT_BASE64)
 #define IMPLEMENTED_BASE64
 
 #include <stdlib.h>
@@ -99,10 +99,15 @@ char *base64_encode(const unsigned char *src, size_t input_length, char **outptr
 }
 
 unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen){
-    if(!is_valid_base64(src,input_length)){
-        error(BAD_CONTENT);
-        return NULL;
+    if(!input_length || input_length % 4){
+        return false;
     }
+
+    unsigned char lookup_table[256];
+    memset(lookup_table,255,sizeof(lookup_table));
+    memcpy(&lookup_table['+'],decode_table,sizeof(decode_table));
+
+
 
     size_t padding = 0;
     size_t i = input_length;
@@ -130,6 +135,11 @@ unsigned char *base64_decode(const char *src, size_t input_length, unsigned char
     unsigned char temp[4];
     while(i>=4){
         for(int j=0;j<4;j++){
+
+            if(lookup_table[(size_t)*src]==0xff){
+                return false;
+            }
+
             temp[j] = decode_table[*src++ - 43] << 2;
         }
         *output++ = temp[0] | (temp[1] >> 6);

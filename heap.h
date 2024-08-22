@@ -1,5 +1,5 @@
-#ifndef HEAP_H_
-#define HEAP_H_
+#ifndef _HEAP_H_
+#define _HEAP_H_
 
 #define IMPLEMENT_VECTOR
 #include "vector.h"
@@ -104,7 +104,7 @@
 #define _heap_sort2(vector, cmp_macro) _heap_sort(vector, cmp_macro)
 #define heap_sort(...) FUNCTION_CHOOSER(_heap_sort, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)
 
-#endif // HEAP_H_
+#endif // _HEAP_H_
 
 #if 0
 int main() {
