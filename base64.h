@@ -24,7 +24,7 @@ static void error(const char *format, ...);
 #endif //_BASE64_H_
 
 #if !defined(_IMPLEMENTED_BASE64_) && defined(IMPLEMENT_BASE64)
-#define IMPLEMENTED_BASE64
+#define _IMPLEMENTED_BASE64_
 
 #include <stdlib.h>
 #include <string.h>
