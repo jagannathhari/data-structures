@@ -46,8 +46,8 @@ void *vector_ensure_capacity(void *vector, size_t total_element);
 
 #endif // _VECTOR_H_
 
-#ifdef IMPLEMENT_VECTOR
-#undef IMPLEMENT_VECTOR // Do not define more than once.
+#if !defined(_IMPLEMENTED_VECTOR_) && defined(IMPLEMENT_VECTOR)
+#define _IMPLEMENTED_VECTOR_
 
 void *vector_init(size_t element_size, size_t capacity) {
     void *ptr = 0;
