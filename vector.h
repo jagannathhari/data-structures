@@ -10,6 +10,7 @@
 
 typedef struct {
     size_t capacity;
+    size_t element_size;
     size_t length;
 } VectorHeader;
 
@@ -22,12 +23,12 @@ typedef struct {
 #define vector_insert(vector, pos, val) (vector_shift_right(vector, pos, 1,sizeof(*vector)), vector[pos] = val, &vector[pos])
 
 #define free_vector(v)                  free((vector_header(v)))
-#define vector_append(vector, value)    ((vector) = vector_ensure_capacity(vector, 1, sizeof((*vector))),  \
+#define vector_append(vector, value)    ((vector) = vector_ensure_capacity(vector, 1),  \
                                         (vector)[vector_header(vector)->length] = (value),                 \
                                         &(vector)[vector_header(vector)->length++])                        \
 
 void *vector_init(size_t element_size, size_t capacity);
-void *vector_ensure_capacity(void *vector, size_t total_element,size_t element_size);
+void *vector_ensure_capacity(void *vector, size_t total_element);
 
 #endif // _VECTOR_H_
 
@@ -41,6 +42,7 @@ void *vector_init(size_t element_size, size_t capacity) {
 
     if (vec_header) {
         vec_header->capacity = capacity;
+        vec_header->element_size = element_size;
         vec_header->length = 0;
         ptr = vec_header + 1;
     }
@@ -48,8 +50,9 @@ void *vector_init(size_t element_size, size_t capacity) {
     return ptr;
 }
 
-void *vector_ensure_capacity(void *vector, size_t total_element, size_t element_size) {
+void *vector_ensure_capacity(void *vector, size_t total_element) {
     VectorHeader *vec_header = vector_header(vector);
+    size_t element_size = vec_header->element_size;
     size_t desired_capacity = vec_header->length + total_element;
     if (vec_header->capacity < desired_capacity) {
         size_t new_capacity = vec_header->capacity * 2;
@@ -74,7 +77,7 @@ void *vector_ensure_capacity(void *vector, size_t total_element, size_t element_
 
 void vector_shift_right(void *vector, size_t from_pos, size_t shift_by, size_t element_size) {
     size_t old_length = vector_length(vector);
-    void *new_vector = vector_ensure_capacity(vector, shift_by, element_size);
+    void *new_vector = vector_ensure_capacity(vector, shift_by);
     vector_header(vector)->length += shift_by;
     char *base = new_vector;
 
