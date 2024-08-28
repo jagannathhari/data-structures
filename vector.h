@@ -25,7 +25,7 @@ typedef struct {
 #define free_vector(v)                  free((vector_header(v)))
 #define vector_append(vector, value)    ((vector) = vector_ensure_capacity(vector, 1),  \
                                         (vector)[vector_header(vector)->length] = (value),                 \
-                                        &(vector)[vector_header(vector)->length++])                        \
+                                        &(vector)[vector_header(vector)->length++])                        
 
 #define vector_map(func,des,in)\
 do{\
