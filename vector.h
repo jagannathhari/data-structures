@@ -22,7 +22,7 @@ typedef struct {
 #define vector_pop(v)                   (vector_header(v)->length--,v[vector_length(v)])
 #define vector_insert(vector, pos, val) (vector_shift_right(vector, pos, 1,sizeof(*vector)), vector[pos] = val, &vector[pos])
 
-#define free_vector(v)                  free((vector_header(v)))
+#define free_vector(v)                  free((v)?(vector_header(v)):NULL)
 #define vector_append(vector, value)    ((vector) = vector_ensure_capacity(vector, 1),  \
                                         (vector)[vector_header(vector)->length] = (value),                 \
                                         &(vector)[vector_header(vector)->length++])                        
