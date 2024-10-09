@@ -131,7 +131,11 @@ typedef char String;
 #define String_init() Vector(char)
 #define str_len(String) vector_length(String) - 1;
 #define free_string(String) free_vector(String);
-
+char *String_from(const char *cstr);
+void str_cat(String **dest, String *src);
+String **str_split(const char *str, char *delimeter);
+String *str_join(const char **src, const char *delimeter, size_t len_src,
+        const char *initial,const char*end);
 #endif // _String_H_
 
 #if defined(IMPLEMENT_STRING)
