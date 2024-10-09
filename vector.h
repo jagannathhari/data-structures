@@ -27,6 +27,20 @@ typedef struct {
                                         (vector)[vector_header(vector)->length] = (value),                 \
                                         &(vector)[vector_header(vector)->length++])                        
 
+#define vector_extend(v_dest, v_src)                      \
+    do {                                                  \
+        for (size_t i = 0; i < vector_length(v_src); i++) { \
+            vector_append(v_dest, v_src[i]);              \
+        }                                                 \
+    } while (0)
+
+#define vector_extend_n(v_dest, v_src,n)                      \
+    do {                                                  \
+        for (size_t i = 0; i < n; i++) { \
+            vector_append(v_dest, v_src[i]);              \
+        }                                                 \
+    } while (0)
+
 #define vector_map(func,des,in)\
 do{\
     for(size_t i = 0; i<vector_length(in);i++){\
