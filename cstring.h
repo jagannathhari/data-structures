@@ -177,7 +177,7 @@ String **str_split(const char *str, char *delimeter) {
 }
 
 String *str_join(const char **src, const char *delimeter, size_t len_src,
-        const char *initial,constchar*end) {
+        const char *initial,const char*end) {
     String *result = String_init();
     const char *temp = NULL;
     if(initial){
