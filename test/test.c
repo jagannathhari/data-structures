@@ -14,7 +14,7 @@ void cstring_testcase1() {
     size_t len = sizeof(desired_split1) / sizeof(desired_split1[0]);
     char *delimiter1 = " ";
     String **splited1 = str_split(test_string1, delimiter1);
-    char *joined1 = str_join((const char **)splited1, delimiter_join1, len);
+    char *joined1 = str_join((const char **)splited1, delimiter_join1, len,NULL,NULL);
 
     assert(vector_length(splited1) == len);
     for (size_t i = 0; i < len; i++) {
@@ -34,7 +34,7 @@ void cstring_testcase2() {
     size_t len = sizeof(desired_split2) / sizeof(desired_split2[0]);
     char *delimiter2 = ",";
     String **splited2 = str_split(test_string2, delimiter2);
-    char *joined2 = str_join((const char **)splited2, delimiter_join2, len);
+    char *joined2 = str_join((const char **)splited2, delimiter_join2, len,NULL,NULL);
 
     assert(vector_length(splited2) == len);
     for (size_t i = 0; i < len; i++) {
@@ -54,7 +54,7 @@ void cstring_testcase3() {
     size_t len = sizeof(desired_split3) / sizeof(desired_split3[0]);
     char *delimiter3 = "-";
     String **splited3 = str_split(test_string3, delimiter3);
-    char *joined3 = str_join((const char **)splited3, delimiter_join3, len);
+    char *joined3 = str_join((const char **)splited3, delimiter_join3, len,NULL,NULL);
 
     assert(vector_length(splited3) == len);
     for (size_t i = 0; i < len; i++) {
@@ -74,7 +74,7 @@ void cstring_testcase4() {
     size_t len = sizeof(desired_split4) / sizeof(desired_split4[0]);
     char *delimiter4 = " ";
     String **splited4 = str_split(test_string4, delimiter4);
-    char *joined4 = str_join((const char **)splited4, delimiter_join4, len);
+    char *joined4 = str_join((const char **)splited4, delimiter_join4, len,NULL,NULL);
 
     assert(vector_length(splited4) == len);
     for (size_t i = 0; i < len; i++) {
@@ -94,7 +94,7 @@ void cstring_testcase5() {
     size_t len = sizeof(desired_split5) / sizeof(desired_split5[0]);
     char *delimiter5 = " ";
     String **splited5 = str_split(test_string5, delimiter5);
-    char *joined5 = str_join((const char **)splited5, delimiter_join5, len);
+    char *joined5 = str_join((const char **)splited5, delimiter_join5, len,NULL,NULL);
 
     assert(vector_length(splited5) == len);
     for (size_t i = 0; i < len; i++) {
