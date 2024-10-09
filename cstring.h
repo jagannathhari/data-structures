@@ -129,8 +129,8 @@ void vector_shift_right(void *vector, size_t from_pos, size_t shift_by, size_t e
 
 typedef char String;
 #define String_init() Vector(char)
-#define str_len(String) vector_length(String) - 1
-#define free_string(String) free_vector(String)
+#define str_len(String) vector_length(String) - 1;
+#define free_string(String) free_vector(String);
 
 #endif // _String_H_
 
@@ -176,9 +176,17 @@ String **str_split(const char *str, char *delimeter) {
     return result;
 }
 
-String *str_join(const char **src, const char *delimeter, size_t len_src) {
+String *str_join(const char **src, const char *delimeter, size_t len_src,
+        const char *initial,constchar*end) {
     String *result = String_init();
     const char *temp = NULL;
+    if(initial){
+        temp = initial;
+        while (*temp) {
+            vector_append(result, *temp++);
+        }
+    }
+
     for (size_t i = 0; i < len_src; i++) {
         temp = src[i];
         while (*temp) {
@@ -189,6 +197,12 @@ String *str_join(const char **src, const char *delimeter, size_t len_src) {
             while (*temp) {
                 vector_append(result, *temp++);
             }
+        }
+    }
+    if(end){
+        temp = end;
+        while (*temp) {
+            vector_append(result, *temp++);
         }
     }
     vector_append(result, '\0');
