@@ -129,7 +129,7 @@ void vector_shift_right(void *vector, size_t from_pos, size_t shift_by, size_t e
 
 typedef char String;
 #define String_init() Vector(char)
-#define str_len(String) vector_length(String) - 1
+#define str_len(String) (vector_length(String) - 1)
 #define free_string(String) free_vector(String)
 char *String_from(const char *cstr);
 void str_cat(String **dest, String *src);
