@@ -152,6 +152,8 @@ char *String_from(const char *cstr) {
     return str;
 }
 void _str_cat(String **dest,...) {
+    if(!dest) return;
+    if(vector_length(*dest)>0) (void)vector_pop(*dest);
     va_list ap;
     va_start(ap,dest);
     char *src;
