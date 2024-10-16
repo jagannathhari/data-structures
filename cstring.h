@@ -136,6 +136,7 @@ char *String_from(const char *cstr);
 String **str_split(const char *str, char *delimeter);
 String *str_join(const char **src, const char *delimeter, size_t len_src,
         const char *initial,const char*end);
+void _str_cat(String **dest,...);
 #endif // _String_H_
 
 #if defined(IMPLEMENT_STRING)
@@ -150,7 +151,7 @@ char *String_from(const char *cstr) {
     vector_append(str, '\0');
     return str;
 }
-static void _str_cat(String **dest,...) {
+void _str_cat(String **dest,...) {
     va_list ap;
     va_start(ap,dest);
     char *src;
