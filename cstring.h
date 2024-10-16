@@ -159,7 +159,7 @@ static void _str_cat(String **dest,...) {
             vector_append(*dest,*src++);
         }
     }
-
+    va_end(ap);
     vector_append(*dest, '\0');
 }
 
