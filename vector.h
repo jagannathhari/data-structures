@@ -17,7 +17,7 @@ typedef struct {
 #define VECTOR_CAPACITY                 16
 #define Vector(T)                       vector_init(sizeof(T), VECTOR_CAPACITY)
 #define vector_header(v)                ((VectorHeader *)(v)-1)
-#define vector_length(v)                vector_header(v)->length
+#define vector_length(v)                ((v)?vector_header(v)->length:-1)
 #define vector_capacity(v)              (vector_header(v)->capacity)
 #define vector_pop(v)                   (vector_header(v)->length--,v[vector_length(v)])
 #define vector_insert(vector, pos, val) (vector_shift_right(vector, pos, 1,sizeof(*vector)), vector[pos] = val, &vector[pos])
