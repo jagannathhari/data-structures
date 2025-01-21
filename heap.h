@@ -18,7 +18,7 @@
 {                                                                                                                  \
     vector_append(vector, key);                                                                                    \
     __typeof__(vector[0]) temp;                                                                                    \
-    for (int i = vector_length(vector) - 1; i > 0 && cmp_macro(vector[(i - 1) / 2], vector[i]); i = (i - 1) / 2) { \
+    for (size_t i = vector_length(vector) - 1; i > 0 && cmp_macro(vector[(i - 1) / 2], vector[i]); i = (i - 1) / 2) { \
         temp = vector[(i - 1) / 2];                                                                                \
         vector[(i - 1) / 2] = vector[i];                                                                           \
         vector[i] = temp;                                                                                          \
@@ -32,10 +32,10 @@
 
 #define _heapify_helper(vector, index, cmp_macro)                                              \
 {                                                                                              \
-    int left_child_idx;                                                                        \
-    int right_child_idx;                                                                       \
-    int parent_idx = index;                                                                    \
-    int min = parent_idx;                                                                      \
+    size_t left_child_idx;                                                                        \
+    size_t right_child_idx;                                                                       \
+    size_t parent_idx = index;                                                                    \
+    size_t min = parent_idx;                                                                      \
     __typeof__(vector[0]) temp;                                                                \
     size_t vec_length = vector_length(vector);                                                 \
     while (parent_idx < vec_length) {                                                          \
@@ -63,7 +63,7 @@
 
 #define _heapify(vector, cmp_macro)                              \
 {                                                                \
-    for (int i = (vector_length(vector) / 2) - 1; i >= 0; i--) { \
+    for (size_t i = (vector_length(vector) / 2); i-- > 0; ) { \
         _heapify_helper(vector, i, cmp_macro);                   \
     }                                                            \
 }
@@ -88,7 +88,7 @@
 #define _heap_sort(vector, cmp_macro)                          \
 {                                                              \
     __typeof__(vector[0]) temp;                                \
-    int orignal_length = vector_length(vector);                \
+    size_t  orignal_length = vector_length(vector);                \
     heapify(vector, cmp_macro);                                \
     while (vector_length(vector)) {                            \
         temp = vector[0];                                      \
