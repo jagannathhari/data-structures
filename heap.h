@@ -14,59 +14,69 @@
 
 #define default_cmp(a, b) ((a) > (b) ? 1 : 0)
 
-#define _heap_push(vector, key, cmp_macro)                                                                         \
-{                                                                                                                  \
-    vector_append(vector, key);                                                                                    \
-    __typeof__(vector[0]) temp;                                                                                    \
-    for (size_t i = vector_length(vector) - 1; i > 0 && cmp_macro(vector[(i - 1) / 2], vector[i]); i = (i - 1) / 2) { \
-        temp = vector[(i - 1) / 2];                                                                                \
-        vector[(i - 1) / 2] = vector[i];                                                                           \
-        vector[i] = temp;                                                                                          \
-    }                                                                                                              \
-}
+#define _heap_push(vector, key, cmp_macro)                                     \
+    {                                                                          \
+        vector_append(vector, key);                                            \
+        __typeof__(vector[0]) temp;                                            \
+        for (size_t i = vector_length(vector) - 1;                             \
+             i > 0 && cmp_macro(vector[(i - 1) / 2], vector[i]);               \
+             i = (i - 1) / 2)                                                  \
+        {                                                                      \
+            temp = vector[(i - 1) / 2];                                        \
+            vector[(i - 1) / 2] = vector[i];                                   \
+            vector[i] = temp;                                                  \
+        }                                                                      \
+    }
 
 #define _heap_push2(vector, key) _heap_push(vector, key, default_cmp)
 #define _heap_push3(vector, key, cmp) _heap_push(vector, key, cmp)
 
 #define heap_push(...) FUNCTION_CHOOSER(_heap_push, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)
 
-#define _heapify_helper(vector, index, cmp_macro)                                              \
-{                                                                                              \
-    size_t left_child_idx;                                                                        \
-    size_t right_child_idx;                                                                       \
-    size_t parent_idx = index;                                                                    \
-    size_t min = parent_idx;                                                                      \
-    __typeof__(vector[0]) temp;                                                                \
-    size_t vec_length = vector_length(vector);                                                 \
-    while (parent_idx < vec_length) {                                                          \
-        left_child_idx = 2 * parent_idx + 1;                                                   \
-        right_child_idx = 2 * parent_idx + 2;                                                  \
-        if (left_child_idx < vec_length && cmp_macro(vector[min], vector[left_child_idx])) {   \
-            min = left_child_idx;                                                              \
-        }                                                                                      \
-                                                                                               \
-        if (right_child_idx < vec_length && cmp_macro(vector[min], vector[right_child_idx])) { \
-            min = right_child_idx;                                                             \
-        }                                                                                      \
-                                                                                               \
-        if (min == parent_idx) {                                                               \
-            break;                                                                             \
-        }                                                                                      \
-                                                                                               \
-        temp = vector[min];                                                                    \
-        vector[min] = vector[parent_idx];                                                      \
-        vector[parent_idx] = temp;                                                             \
-                                                                                               \
-        parent_idx = min;                                                                      \
-    }                                                                                          \
-}
+#define _heapify_helper(vector, index, cmp_macro)                              \
+    {                                                                          \
+        size_t left_child_idx;                                                 \
+        size_t right_child_idx;                                                \
+        size_t parent_idx = index;                                             \
+        size_t min = parent_idx;                                               \
+        __typeof__(vector[0]) temp;                                            \
+        size_t vec_length = vector_length(vector);                             \
+        while (parent_idx < vec_length)                                        \
+        {                                                                      \
+            left_child_idx = 2 * parent_idx + 1;                               \
+            right_child_idx = 2 * parent_idx + 2;                              \
+            if (left_child_idx < vec_length &&                                 \
+                cmp_macro(vector[min], vector[left_child_idx]))                \
+            {                                                                  \
+                min = left_child_idx;                                          \
+            }                                                                  \
+                                                                               \
+            if (right_child_idx < vec_length &&                                \
+                cmp_macro(vector[min], vector[right_child_idx]))               \
+            {                                                                  \
+                min = right_child_idx;                                         \
+            }                                                                  \
+                                                                               \
+            if (min == parent_idx)                                             \
+            {                                                                  \
+                break;                                                         \
+            }                                                                  \
+                                                                               \
+            temp = vector[min];                                                \
+            vector[min] = vector[parent_idx];                                  \
+            vector[parent_idx] = temp;                                         \
+                                                                               \
+            parent_idx = min;                                                  \
+        }                                                                      \
+    }
 
-#define _heapify(vector, cmp_macro)                              \
-{                                                                \
-    for (size_t i = (vector_length(vector) / 2); i-- > 0; ) { \
-        _heapify_helper(vector, i, cmp_macro);                   \
-    }                                                            \
-}
+#define _heapify(vector, cmp_macro)                                            \
+    {                                                                          \
+        for (size_t i = (vector_length(vector) / 2); i-- > 0;)                 \
+        {                                                                      \
+            _heapify_helper(vector, i, cmp_macro);                             \
+        }                                                                      \
+    }
 
 #define _heapify1(vector) _heapify(vector, default_cmp)
 #define _heapify2(vector, cmp_macro) _heapify(vector, cmp_macro)
@@ -85,20 +95,21 @@
 #define _heap_pop2(vector, cmp_macro) _heap_pop(vector, cmp_macro)
 #define heap_pop(...) FUNCTION_CHOOSER(_heap_pop, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)
 
-#define _heap_sort(vector, cmp_macro)                          \
-{                                                              \
-    __typeof__(vector[0]) temp;                                \
-    size_t  orignal_length = vector_length(vector);                \
-    heapify(vector, cmp_macro);                                \
-    while (vector_length(vector)) {                            \
-        temp = vector[0];                                      \
-        vector[0] = vector[vector_length(vector) - 1];         \
-        vector[vector_length(vector) - 1] = temp;              \
-        vector_header(vector)->length--;                       \
-        _heapify_helper(vector, 0, cmp_macro);                 \
-    }                                                          \
-    vector_header(vector)->length = orignal_length;            \
-}
+#define _heap_sort(vector, cmp_macro)                                          \
+    {                                                                          \
+        __typeof__(vector[0]) temp;                                            \
+        size_t orignal_length = vector_length(vector);                         \
+        heapify(vector, cmp_macro);                                            \
+        while (vector_length(vector))                                          \
+        {                                                                      \
+            temp = vector[0];                                                  \
+            vector[0] = vector[vector_length(vector) - 1];                     \
+            vector[vector_length(vector) - 1] = temp;                          \
+            vector_header(vector)->length--;                                   \
+            _heapify_helper(vector, 0, cmp_macro);                             \
+        }                                                                      \
+        vector_header(vector)->length = orignal_length;                        \
+    }
 
 #define _heap_sort1(vector) _heap_sort(vector, default_cmp)
 #define _heap_sort2(vector, cmp_macro) _heap_sort(vector, cmp_macro)
