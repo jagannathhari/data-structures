@@ -28,11 +28,12 @@
     #define VEC_REALLOC(ptr,new_size) realloc(ptr,new_size)
 #endif
 
-typedef struct {
+typedef struct
+{
     size_t capacity;
     size_t element_size;
     size_t length;
-} VectorHeader;
+}VectorHeader;
 
 #define VECTOR_CAPACITY                 16
 #define Vector(T)                       vector_init(sizeof(T), VECTOR_CAPACITY)
@@ -52,12 +53,14 @@ VECAPI void *vector_ensure_capacity(void *vector, size_t total_element);
 
 #ifdef IMPLEMENT_VECTOR
 
-VECAPI void *vector_init(size_t element_size, size_t capacity) {
+VECAPI void *vector_init(size_t element_size, size_t capacity)
+{
     void *ptr = 0;
     VectorHeader *vec_header =
         VEC_MALLOC(sizeof(*vec_header) + capacity * element_size);
 
-    if (vec_header) {
+    if (vec_header)
+    {
         vec_header->capacity = capacity;
         vec_header->element_size = element_size;
         vec_header->length = 0;
@@ -67,19 +70,20 @@ VECAPI void *vector_init(size_t element_size, size_t capacity) {
     return ptr;
 }
 
-VECAPI void *vector_ensure_capacity(void *vector, size_t total_element) {
+VECAPI void *vector_ensure_capacity(void *vector, size_t total_element) 
+{
     VectorHeader *vec_header = vector_header(vector);
     size_t element_size = vec_header->element_size;
     size_t desired_capacity = vec_header->length + total_element;
-    if (vec_header->capacity < desired_capacity) {
+    if (vec_header->capacity < desired_capacity) 
+    {
         size_t new_capacity = vec_header->capacity * 2;
-        while (new_capacity < desired_capacity) {
-            new_capacity *= 2;
-        }
+        while (new_capacity < desired_capacity) new_capacity *= 2;
 
         size_t new_size = sizeof(*vec_header) + new_capacity * element_size;
         VectorHeader *temp = VEC_REALLOC(vec_header, new_size);
-        if (!temp) {
+        if (!temp) 
+        {
             // todo
             return NULL;
         }
