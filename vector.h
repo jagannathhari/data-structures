@@ -37,7 +37,7 @@ typedef struct {
 #define VECTOR_CAPACITY                 16
 #define Vector(T)                       vector_init(sizeof(T), VECTOR_CAPACITY)
 #define vector_header(v)                ((VectorHeader *)(v)-1)
-#define vector_length(v)                ((v)?vector_header(v)->length:-1)
+#define vector_length(v)                ((v)?vector_header(v)->length:0)
 #define vector_capacity(v)              (vector_header(v)->capacity)
 #define vector_pop(v)                   (vector_header(v)->length--,v[vector_length(v)])
 #define free_vector(v)                  VEC_FREE((v)?(vector_header(v)):NULL)
