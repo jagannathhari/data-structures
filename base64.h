@@ -1,6 +1,8 @@
 #ifndef _BASE64_H_
 #define _BASE64_H_
 
+#include <stddef.h>
+
 #ifndef BASE64API
     #ifdef BASE64_STATIC
         #define BASE64API static
@@ -9,13 +11,16 @@
     #endif
 #endif
 
-#ifndef BASE64_MALLOC
-    #define BASE64_MALLOC(bytes) malloc(bytes);
-#endif
+#ifdef BASE64_NOSTD
+typedef enum
+{
+    false,
+    true,
+}bool;
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdbool.h>
+#else
+    #include <stdbool.h>
+#endif
 
 BASE64API char *base64_encode(const unsigned char *src, size_t input_length, char **outptr);
 BASE64API unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen);
@@ -25,14 +30,20 @@ BASE64API bool is_valid_base64(const char *base64,size_t input_length);
 
 #ifdef IMPLEMENT_BASE64
 
-#include <stdlib.h>
-#include <string.h>
-
 #define MEMEORY_ERROR "Unable to allocate Memory"
 #define BAD_CONTENT "Not a valid base64 content."
 
-static const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+#if (defined (BASE64_MALLOC) && !defined(BASE64_FREE)) || (defined (BASE64_FREE) && !defined(BASE64_MALLOC))
+    #error "Need to define both BASE64_MALLOC and BASE64_FREE"
+#endif
 
+#ifndef BASE64_MALLOC
+    #include <stdlib.h>
+    #define BASE64_MALLOC(bytes) malloc(bytes)
+    #define BASE64_FREE(ptr) free(ptr)
+#endif
+
+static const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const unsigned char decode_table[] = 
 {
     62, 255, 255, 255, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 255, 255,
@@ -41,15 +52,60 @@ static const unsigned char decode_table[] =
     32, 33,  34,  35,  36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,  48,  49,  50,  51
 };
 
+#ifdef BASE64_NOSTD
 
-static void error(const char *format, ...);
-static void error(const char *format, ...) {
-    va_list args;
-    va_start(args, format);
-    fprintf(stderr, "[ERROR] ");
-    vfprintf(stderr, format, args);
-    va_end(args);
-}
+    static void *base64_memcpy(void *dest, const void *src, size_t n)
+    static void *base64_memset(void *src, int c, size_t n);
+
+    #ifndef BASE64_MEMSET
+        #define BASE64_MEMSET(ptr_src, int_c, size_t_n) base64_memset(ptr_src,int_c,size_t_n)
+    #endif 
+
+    #ifndef BASE64_MEMCPY
+        #define BASE64_MEMCPY(ptr_src, ptr_dest, size_t_n) base64_memset(ptr_src,ptr_dest,size_t_n)
+    #endif 
+
+    static void *base64_memset(void *src, int c, size_t n)
+    {
+        if(!src || !n) return NULL;
+
+        unsigned char *byte_src = src;
+        size_t len = n;
+        while(len--)
+        {
+            *byte_src++ = (unsigned char) c; 
+        }
+
+        return src;
+    }
+
+    static void *base64_memcpy(void *dest, const void *src, size_t n)
+    {
+        if(!dest || !src || !n) return NULL;
+
+        unsigned char *byte_dest = dest;
+        const unsigned char *byte_src  = src;
+        size_t len = n;
+
+        while(len--)
+        {
+            *byte_dest++ = *byte_src++;
+        }
+
+        return dest;
+    }
+
+#else
+    #include<string.h>
+    // if using stdlib
+    #ifndef BASE64_MEMSET
+        #define BASE64_MEMSET(ptr_src, int_c, size_t_n) memset(ptr_src,int_c,size_t_n)
+    #endif 
+
+    #ifndef BASE64_MEMCPY
+        #define BASE64_MEMCPY(ptr_src, ptr_dest, size_t_n) memcpy(ptr_src,ptr_dest,size_t_n)
+    #endif
+#endif
 
 BASE64API bool is_valid_base64(const char *base64,size_t input_length){
     if(!input_length || input_length % 4){
@@ -80,7 +136,6 @@ BASE64API char *base64_encode(const unsigned char *src, size_t input_length, cha
     result = output = BASE64_MALLOC((input_length + 2) / 3 * 4 + 1);
 
     if (!output) {
-        error(MEMEORY_ERROR);
         return NULL;
     }
 
@@ -114,7 +169,7 @@ BASE64API char *base64_encode(const unsigned char *src, size_t input_length, cha
 
 BASE64API unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen){
     if(!input_length || input_length % 4){
-        return false;
+        return NULL;
     }
 
     unsigned char lookup_table[256];
@@ -142,7 +197,6 @@ BASE64API unsigned char *base64_decode(const char *src, size_t input_length, uns
     unsigned char *result = NULL;
     result = output = BASE64_MALLOC(sizeof(*result) * decoded_length + 1);
     if(result == NULL){
-        error(MEMEORY_ERROR);
         return NULL;
     }
 
@@ -151,7 +205,9 @@ BASE64API unsigned char *base64_decode(const char *src, size_t input_length, uns
         for(int j=0;j<4;j++){
 
             if(lookup_table[(size_t)*src]==0xff){
-                return false;
+                *outlen = 0;
+                BASE64_FREE(result);
+                return NULL ;
             }
 
             temp[j] = decode_table[*src++ - 43] << 2;
