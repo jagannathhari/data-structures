@@ -108,7 +108,7 @@ static const unsigned char decode_table[] =
 #endif
 
 BASE64API bool is_valid_base64(const char *base64,size_t input_length){
-    if(!input_length || input_length % 4){
+    if(!base64 || !input_length || input_length % 4){
         return false;
     }
 
@@ -130,6 +130,7 @@ BASE64API bool is_valid_base64(const char *base64,size_t input_length){
 }
 
 BASE64API char *base64_encode(const unsigned char *src, size_t input_length, char **outptr) {
+    if(!src) return NULL;
 
     char *result = NULL;
     char *output = NULL;
@@ -163,12 +164,14 @@ BASE64API char *base64_encode(const unsigned char *src, size_t input_length, cha
         }
     }
     *output = '\0';
-    *outptr = result;
+
+    if(outptr) *outptr = result;
+
     return result;
 }
 
 BASE64API unsigned char *base64_decode(const char *src, size_t input_length, unsigned char **outptr,size_t *outlen){
-    if(!input_length || input_length % 4){
+    if(!src || !input_length || input_length % 4){
         return NULL;
     }
 
@@ -232,7 +235,9 @@ BASE64API unsigned char *base64_decode(const char *src, size_t input_length, uns
 
     *outlen = decoded_length;
     *output = '\0';
-    *outptr = result;
+
+    if(outptr) *outptr = result;
+
     return result;
 }
 #endif //IMPLEMENT_BASE64
