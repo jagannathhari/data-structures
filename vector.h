@@ -1,5 +1,5 @@
-#ifndef _VECTOR_H_
-#define _VECTOR_H_
+#ifndef VECTOR_H
+#define VECTOR_H
 
 // refrence https://bytesbeneath.com/p/dynamic-arrays-in-c
 
@@ -49,7 +49,7 @@ typedef struct
 VECAPI void *vector_init(size_t element_size, size_t capacity);
 VECAPI void *vector_ensure_capacity(void *vector, size_t total_element);
 
-#endif // _VECTOR_H_
+#endif // VECTOR_H
 
 #ifdef IMPLEMENT_VECTOR
 
