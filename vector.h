@@ -46,14 +46,14 @@ typedef struct
                                         (vector)[vector_header(vector)->length] = (value),                 \
                                         &(vector)[vector_header(vector)->length++])                        
 
-VECAPI void *vector_init(size_t element_size, size_t capacity);
-VECAPI void *vector_ensure_capacity(void *vector, size_t total_element);
+VECAPI void *vector_init(const size_t element_size, const size_t capacity);
+VECAPI void *vector_ensure_capacity(void *vector, const size_t total_element);
 
 #endif // VECTOR_H
 
 #ifdef IMPLEMENT_VECTOR
 
-VECAPI void *vector_init(size_t element_size, size_t capacity)
+VECAPI void *vector_init(size_t element_size, const size_t capacity)
 {
     void *ptr = 0;
     VectorHeader *vec_header =
@@ -70,17 +70,17 @@ VECAPI void *vector_init(size_t element_size, size_t capacity)
     return ptr;
 }
 
-VECAPI void *vector_ensure_capacity(void *vector, size_t total_element) 
+VECAPI void *vector_ensure_capacity(void *vector, const size_t total_element) 
 {
     VectorHeader *vec_header = vector_header(vector);
-    size_t element_size = vec_header->element_size;
-    size_t desired_capacity = vec_header->length + total_element;
+    const size_t element_size = vec_header->element_size;
+    const size_t desired_capacity = vec_header->length + total_element;
     if (vec_header->capacity < desired_capacity) 
     {
         size_t new_capacity = vec_header->capacity * 2;
         while (new_capacity < desired_capacity) new_capacity *= 2;
 
-        size_t new_size = sizeof(*vec_header) + new_capacity * element_size;
+        const size_t new_size = sizeof(*vec_header) + new_capacity * element_size;
         VectorHeader *temp = VEC_REALLOC(vec_header, new_size);
         if (!temp) 
         {
