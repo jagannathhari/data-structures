@@ -50,7 +50,7 @@ typedef struct
                                         &(vector)[vector_header(vector)->length++])                        
 
 VECAPI void *vector_init(const size_t element_size, const size_t capacity);
-VECAPI void *vector_ensure_capacity(void *vector, const size_t total_element);
+VECAPI void *vector_ensure_capacity(void *vector,   const size_t total_element);
 
 #endif // VECTOR_H
 
@@ -64,10 +64,10 @@ VECAPI void *vector_init(size_t element_size, const size_t capacity)
 
     if (vec_header)
     {
-        vec_header->capacity = capacity;
+        vec_header->capacity     = capacity;
         vec_header->element_size = element_size;
-        vec_header->length = 0;
-        ptr = vec_header + 1;
+        vec_header->length       = 0;
+        ptr                      = vec_header + 1;
     }
 
     return ptr;
@@ -75,9 +75,10 @@ VECAPI void *vector_init(size_t element_size, const size_t capacity)
 
 VECAPI void *vector_ensure_capacity(void *vector, const size_t total_element) 
 {
-    VectorHeader *vec_header = vector_header(vector);
-    const size_t element_size = vec_header->element_size;
+    VectorHeader *vec_header      = vector_header(vector);
+    const size_t element_size     = vec_header->element_size;
     const size_t desired_capacity = vec_header->length + total_element;
+
     if (vec_header->capacity < desired_capacity) 
     {
         size_t new_capacity = vec_header->capacity * 2;
@@ -91,7 +92,7 @@ VECAPI void *vector_ensure_capacity(void *vector, const size_t total_element)
             return NULL;
         }
 
-        vec_header = temp;
+        vec_header           = temp;
         vec_header->capacity = new_capacity;
     }
 
