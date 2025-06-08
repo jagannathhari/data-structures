@@ -35,8 +35,11 @@ typedef struct
     size_t vector__aligment; // I think it will not cause alignment issues for 1, 2, 4, 16, 32 (on 64-bit)
 }VectorHeader;
 
-#define VECTOR_CAPACITY                 16
-#define Vector(T)                       vector_init(sizeof(T), VECTOR_CAPACITY)
+#ifndef INIT_VECTOR_CAPACITY 
+    #define INIT_VECTOR_CAPACITY                 16
+#endif 
+
+#define Vector(T)                       vector_init(sizeof(T), INIT_VECTOR_CAPACITY)
 #define vector_header(v)                ((VectorHeader *)(v)-1)
 #define vector_length(v)                ((v)?vector_header(v)->length:0)
 #define vector_capacity(v)              (vector_header(v)->capacity)
