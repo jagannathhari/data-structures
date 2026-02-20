@@ -38,6 +38,7 @@ Macro-based heap helpers with optional custom comparator.
 ```c
 #define heapify(...)
 #define heap_pop(...)
+#define heap_push(...)
 ```
 
 ## Usage
