@@ -8,7 +8,7 @@
 		for (i = 1; i < n; i++) {                                      \
 			int j = i - 1;                                         \
 			key = arr[i];                                          \
-			while (j > 0 && cmp(arr[j], key) > 0) {                \
+			while (j >= 0 && cmp(arr[j], key) > 0) {               \
 				arr[j + 1] = arr[j];                           \
 				j--;                                           \
 			}                                                      \
